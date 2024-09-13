@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 
 const ImageUploadPreview = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
   const [altText, setAltText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [base64Image, setBase64Image] = useState(null);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.substr(0, 5) === "image") {
       setSelectedImage(URL.createObjectURL(file));
       convertToBase64(file);
-
-      setAltText(""); // Reset alt text when a new image is uploaded
+      setAltText("");
     } else {
       setSelectedImage(null);
       setBase64Image(null);
@@ -29,6 +29,7 @@ const ImageUploadPreview = () => {
     };
     reader.readAsDataURL(file);
   };
+
   const generateAltText = async () => {
     if (!base64Image) return;
 
@@ -57,21 +58,21 @@ const ImageUploadPreview = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <div className="mb-4">
+    <div className="w-full max-w-md mx-auto px-4 py-8">
+      <div className="mb-6">
         <label
           htmlFor="image-upload"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-gray-300 mb-2"
         >
           Upload an image
         </label>
         <div className="flex items-center justify-center w-full">
           <label
             htmlFor="image-upload"
-            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+            className="flex flex-col items-center justify-center w-full h-48 sm:h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-300"
           >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <Upload className="w-10 h-10 mb-3 text-gray-400" />
+            <div className="flex flex-col items-center justify-center p-4 text-center">
+              <Upload className="w-8 h-8 mb-3 text-gray-400" />
               <p className="mb-2 text-sm text-gray-500">
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
@@ -92,18 +93,19 @@ const ImageUploadPreview = () => {
       </div>
 
       {selectedImage && (
-        <div className="mt-4">
+        <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">Image Preview</h2>
-          <img
-            src={selectedImage}
-            alt="Preview"
-            className="w-full h-auto object-contain rounded-lg shadow-md"
-            style={{ maxHeight: "400px" }}
-          />
+          <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden shadow-md">
+            <img
+              src={selectedImage}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
           <Button
             onClick={generateAltText}
             disabled={isLoading}
-            className="mt-4 w-full"
+            className="mt-4 w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-300"
           >
             {isLoading ? "Generating..." : "Generate Alt Text"}
           </Button>
@@ -111,9 +113,9 @@ const ImageUploadPreview = () => {
       )}
 
       {altText && (
-        <div className="mt-4">
+        <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">AI-Generated Alt Text</h2>
-          <p className="text-gray-700">{altText}</p>
+          <p className="text-gray-700 bg-gray-100 p-3 rounded-lg">{altText}</p>
         </div>
       )}
     </div>
